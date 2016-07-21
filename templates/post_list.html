@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-<p>Hello</p>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+    {% for post in post_list %}
+        <div class="row">
+            <div class="col-md-6">
+                <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                <h5>{{ post.created }}</h5>
+                <p>{{ post.content|truncatewords:20 }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock content %}

@@ -28,11 +28,12 @@ def post_detail(request, id=None):
     instance = get_object_or_404(Post, id=id)
     if not request.user.is_authenticated():
         raise Http404
-    context = {"title": instance.title, "post_detail": instance}
+    username = User.objects.get(id=instance.author_id)
+    context = {"title": instance.title, "post_detail": instance, "author_info": username}
     return render(request, "post_detail.html", context)
 
 def user_detail(request, id=None):
-    users = get_object_or_404(User, id=id)
-    print(users)
-    context = {"users": users}
+    user = get_object_or_404(User, id=id)
+    posts = Post.objects.filter(author_id=id)
+    context = {"user": user, "posts": posts}
     return render(request, "user.html", context)

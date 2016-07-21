@@ -1,18 +1,25 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 class Post(models.Model):
     title = models.CharField(max_length=150)
     content = models.TextField()
     rating = models.IntegerField(default=0)
-    image = models.ImageField(upload_to='images')
-    video = models.URLField()
+    image = models.ImageField(upload_to='images', blank=True)
+    video = models.URLField(blank=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     author = models.ForeignKey(User)
 
+    class Meta:
+        ordering = ['created', 'rating']
+
     def __unicode__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("post_detail", kwargs={"id": self.id})
 
 class Comment(models.Model):
     post = models.ForeignKey(Post)
