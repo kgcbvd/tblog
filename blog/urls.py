@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from posts.views import post_list, post_detail, user_detail
+from posts.views import post_list, post_detail, user_detail, post_create, comment_create
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -23,7 +23,9 @@ urlpatterns = [
     url(r'^$', post_list),
     url(r'^admin/', admin.site.urls),
     url(r'^post(?P<id>\d+)/$', post_detail, name="post_detail"),
-    url(r'^user(?P<id>\d+)/$', user_detail)
+    url(r'^user(?P<id>\d+)/$', user_detail),
+    url(r'^create/$', post_create),
+    url(r'^post(?P<id>\d+)/create/$', comment_create),
 ]
 
 

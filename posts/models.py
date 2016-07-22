@@ -13,7 +13,7 @@ class Post(models.Model):
     author = models.ForeignKey(User)
 
     class Meta:
-        ordering = ['created', 'rating']
+        ordering = ['-created', '-rating']
 
     def __unicode__(self):
         return self.title

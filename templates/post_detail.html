@@ -1,6 +1,50 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<p>{{ post_detail.author_id }}</p>
-    <p>{{ author_info.username }}</p>
+    <h1>{{ title }}</h1>
+    <p class="lead"> {{ author_info.username }} &emsp;
+        <span class="glyphicon glyphicon-time"></span>{{ post_detail.created }}&emsp; Рейтинг: {{ post_detail.rating }}</p>
+    <hr>
+    <p class="lead">{{ post_detail.content }}</p>
+    <hr>
+    {% if post_detail.image %}
+        <div class="row">
+            <div class="col-md-4">
+                <img src="{{ post_detail.image.url }}" class="img-responsive"/>
+            </div>
+        </div>
+        <hr>
+    {% endif %}
+    {% if video %}
+        <div class="row">
+            <div class="col-md-4">
+                <iframe width=auto height=auto src={{ video }} frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+        <hr>
+    {% endif %}
+    <!--
+    <div class="well">
+        <h4>Комментарий</h4>
+        <form role="form" action="../comment_create">{% csrf_token %}
+            <div class="form-group">
+                <textarea class="form-control" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>-->
+    {% include "comment_detail.html" %}
+    <hr>
+    {% for comment in comments %}
+    <div class="media">
+        <a class="pull-left" href="#"></a>
+        <div class="media-body">
+            <h4 class="media-heading"> {{ comment.author_id }} &emsp;
+                <small>{{ comment.created_on }}</small>
+            </h4>
+            {{ comment.text }}
+        </div>
+    </div>
+    {% endfor %}
 {% endblock content %}
