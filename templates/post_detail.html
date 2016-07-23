@@ -24,17 +24,8 @@
         </div>
         <hr>
     {% endif %}
-    <!--
-    <div class="well">
-        <h4>Комментарий</h4>
-        <form role="form" action="../comment_create">{% csrf_token %}
-            <div class="form-group">
-                <textarea class="form-control" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить</button>
-        </form>
-    </div>-->
-    {% include "comment_detail.html" %}
+    <input onclick='location.href="./comment_create"' type="submit" class="btn btn-default" value="Комментировать"/>
+
     <hr>
     {% for comment in comments %}
     <div class="media">

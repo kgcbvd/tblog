@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^post(?P<id>\d+)/$', post_detail, name="post_detail"),
     url(r'^user(?P<id>\d+)/$', user_detail),
     url(r'^create/$', post_create),
-    url(r'^post(?P<id>\d+)/create/$', comment_create),
+    url(r'^post(?P<id>\d+)/comment_create', comment_create)
 ]
 
 
