@@ -1,9 +1,10 @@
 from django.contrib import messages
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from posts.models import Post, Comment
+from posts.models import Post, Comment, Like
 from django.contrib.auth.models import User
 from .forms import PostForm, CommentForm
 import json
@@ -79,3 +80,28 @@ def user_detail(request, id=None):
     posts = Post.objects.filter(author_id=id)
     context = {"user": user, "posts": posts}
     return render(request, "user.html", context)
+
+@csrf_exempt
+def like(request, id):
+    if not request.user.is_authenticated():
+        raise Http404
+    vars = {}
+    if request.method == 'POST':
+        user = request.user
+        #id = request.POST.get('id', None)
+        post = get_object_or_404(Post, id=id)
+        liked = Like.objects.create(post_id=post.id)
+        try:
+            user_liked = Like.objects.get(post_id=post.id, user=user)
+        except:
+            user_liked = None
+
+        if user_liked:
+            user_liked.total_likes -= 1
+            liked.user.remove(request.user)
+            user_liked.save()
+        else:
+            liked.user.add(request.user)
+            liked.total_likes += 1
+            liked.save()
+    return HttpResponseRedirect(json.dumps(vars), content_type='application/javascript')

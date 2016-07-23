@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block script %}
+    <script type="text/javascript" src='{% static "js/like.js" %}'></script>
+{% endblock script %}
 
 {% block content %}
     <h1>{{ title }}</h1>
     <p class="lead"> {{ author_info.username }} &emsp;
-        <span class="glyphicon glyphicon-time"></span>{{ post_detail.created }}&emsp; Рейтинг: {{ post_detail.rating }}</p>
+        <span class="glyphicon glyphicon-time"></span>{{ post_detail.created }}</p>
     <hr>
     <p class="lead">{{ post_detail.content }}</p>
     <hr>
@@ -24,6 +29,7 @@
         </div>
         <hr>
     {% endif %}
+    <input type="button" id="like" name="{{ post_detail.id }}" value="Like"/>
     <input onclick='location.href="./comment_create"' type="submit" class="btn btn-default" value="Комментировать"/>
 
     <hr>

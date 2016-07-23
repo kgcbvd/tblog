@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 class Post(models.Model):
     title = models.CharField(max_length=150)
     content = models.TextField()
-    rating = models.IntegerField(default=0)
     image = models.ImageField(upload_to='images', blank=True)
     video = models.URLField(blank=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
@@ -13,7 +12,7 @@ class Post(models.Model):
     author = models.ForeignKey(User)
 
     class Meta:
-        ordering = ['-created', '-rating']
+        ordering = ['-created']
 
     def __unicode__(self):
         return self.title
@@ -29,3 +28,9 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return self.title
+
+class Like(models.Model):
+    user = models.ManyToManyField(User, related_name='likes')
+    post = models.ForeignKey(Post)
+    date = models.DateTimeField(auto_now_add=True)
+    total_likes = models.IntegerField(default=0)
