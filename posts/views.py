@@ -29,14 +29,15 @@ def post_create(request):
 def comment_create(request, id):
     if not request.user.is_authenticated():
         raise Http404
+    post = Post.objects.get(id=id)
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
             instance.author_id = User.objects.get(username=request.user).id
-            instance.post_id = id
+            instance.post_id = post.id
             instance.save()
-            return HttpResponseRedirect('/post'+id)
+            return HttpResponseRedirect(post.get_absolute_url())
     else:
         form = CommentForm()
     return render(request, 'comment_detail.html', {'form': form})
@@ -45,18 +46,18 @@ def post_list(request):
     queryset_list = []
     if request.user.is_authenticated():
         queryset_list = Post.objects.all()
-    """
-    paginator = Paginator(queryset_list, 10)
+
+    paginator = Paginator(queryset_list, 5)
     page = request.GET.get('page')
     try:
         queryset = paginator.page(page)
     except PageNotAnInteger:
         queryset = paginator.page(1)
     except EmptyPage:
-        queryset = paginator.page(paginator.num_pages)"""
+        queryset = paginator.page(paginator.num_pages)
 
     context = {
-        "post_list": queryset_list
+        "post_list": queryset
     }
     return render(request, "post_list.html", context)
 
