@@ -7,6 +7,7 @@ $('#like').click(function(){
         success: function(likes_count) {
             if (likes_count != 0) {
                 $("#rating").html(likes_count);
+                $("#like").attr('disabled',true);
             }
         },
         error: function(rs, e) {}

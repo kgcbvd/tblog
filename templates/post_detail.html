@@ -30,7 +30,11 @@
         </div>
         <hr>
     {% endif %}
-    <input type="button" id="like" name="{{ post_detail.id }}" value="Like"/>
+    {% if liked %}
+        <input type="button" id="like" class="btn btn-default disabled" name="{{ post_detail.id }}" value="Like"/>
+    {% else %}
+        <input type="button" id="like" class="btn btn-default" name="{{ post_detail.id }}" value="Like"/>
+    {% endif %}
     <input onclick='location.href="./comment_create"' type="submit" class="btn btn-default" value="Комментировать"/>
 
     <hr>

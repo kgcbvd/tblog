@@ -72,11 +72,18 @@ def post_detail(request, id=None):
         rating = Like.objects.get(post_id=id).total_likes
     except:
         rating = 0
+    liked = True
+    try:
+        user_liked = Like.objects.get(post_id=id, user=request.user)
+    except:
+        user_liked = None
+    if not user_liked:
+        liked = False
     video = ''
     if instance.video:
         video = "https://www.youtube.com/embed/" + instance.video.split('v=')[-1]
     context = {"title": instance.title, "post_detail": instance, "author_info": username, "comments": comments,
-               "video": video, "rating": rating}
+               "video": video, "rating": rating, "liked": liked}
     return render(request, "post_detail.html", context)
 
 def user_detail(request, id=None):
