@@ -68,11 +68,15 @@ def post_detail(request, id=None):
         raise Http404
     username = User.objects.get(id=instance.author_id)
     comments = Comment.objects.filter(post_id=id)
+    try:
+        rating = Like.objects.get(post_id=id).total_likes
+    except:
+        rating = 0
     video = ''
     if instance.video:
         video = "https://www.youtube.com/embed/" + instance.video.split('v=')[-1]
     context = {"title": instance.title, "post_detail": instance, "author_info": username, "comments": comments,
-               "video": video}
+               "video": video, "rating": rating}
     return render(request, "post_detail.html", context)
 
 def user_detail(request, id=None):
@@ -85,23 +89,21 @@ def user_detail(request, id=None):
 def like(request, id):
     if not request.user.is_authenticated():
         raise Http404
-    vars = {}
+    total_likes = 0
     if request.method == 'POST':
         user = request.user
-        #id = request.POST.get('id', None)
         post = get_object_or_404(Post, id=id)
-        liked = Like.objects.create(post_id=post.id)
+        try:
+            liked = Like.objects.get(post_id=post.id)
+        except:
+            liked = Like.objects.create(post_id=post.id)
         try:
             user_liked = Like.objects.get(post_id=post.id, user=user)
         except:
             user_liked = None
-
-        if user_liked:
-            user_liked.total_likes -= 1
-            liked.user.remove(request.user)
-            user_liked.save()
-        else:
+        if not user_liked:
             liked.user.add(request.user)
             liked.total_likes += 1
+            total_likes = liked.total_likes
             liked.save()
-    return HttpResponseRedirect(json.dumps(vars), content_type='application/javascript')
+    return HttpResponse(total_likes)
