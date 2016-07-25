@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from posts.models import Post, Comment, Like
 from django.contrib.auth.models import User
 from .forms import PostForm, CommentForm
+import random
 import json
 
 def post_create(request):
@@ -137,3 +138,15 @@ def like(request, id):
             total_likes = liked.total_likes
             liked.save()
     return HttpResponse(total_likes)
+
+def random_users(request):
+    users_list = User.objects.all()
+    users = {user.id: user.username for user in users_list}
+    i = 0
+    user_dict = {}
+    while i < 5:
+        el = random.choice(list(users.keys()))
+        user_dict[el] = users[el]
+        del users[el]
+        i += 1
+    return HttpResponse(json.dumps(user_dict), content_type="application/json")

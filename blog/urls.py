@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from posts.views import post_list, post_detail, user_detail, post_create, comment_create, like, post_update
+from posts.views import post_list, post_detail, user_detail, post_create, comment_create, like, post_update, random_users
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^post(?P<id>\d+)/comment_create', comment_create),
     url(r'^post(?P<id>\d+)/like/$', like, name='like'),
     url(r'^post(?P<id>\d+)/edit/$', post_update, name='update'),
+    url(r'^random_users/$', random_users),
 ]
 
 
