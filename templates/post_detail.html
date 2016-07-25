@@ -9,7 +9,10 @@
 {% block content %}
     <h1>{{ title }}</h1>
     <p class="lead"> {{ author_info.username }} &emsp;
-        <span class="glyphicon glyphicon-time"></span>{{ post_detail.created }}</p>
+        <span class="glyphicon glyphicon-time"></span> {{ post_detail.created }}</p>
+    {% if updated%}
+        <p>Дата обновления: {{ post_detail.updated }}</p>
+    {% endif %}
     <p>Рейтинг: <span id="rating">{{ rating }}</span></p>
     <hr>
     <p class="lead">{{ post_detail.content }}</p>
@@ -31,11 +34,14 @@
         <hr>
     {% endif %}
     {% if liked %}
-        <input type="button" id="like" class="btn btn-default disabled" name="{{ post_detail.id }}" value="Like"/>
+        <input type="button" id="liked" class="btn btn-default disabled" name="{{ post_detail.id }}" value="Like"/>
     {% else %}
         <input type="button" id="like" class="btn btn-default" name="{{ post_detail.id }}" value="Like"/>
     {% endif %}
     <input onclick='location.href="./comment_create"' type="submit" class="btn btn-default" value="Комментировать"/>
+    {% if may_updated %}
+        <input onclick='location.href="./edit/"' type="submit" class="btn btn-default" value="Изменить"/>
+    {% endif %}
 
     <hr>
     {% for comment in comments %}

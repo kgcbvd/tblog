@@ -27,6 +27,23 @@ def post_create(request):
     }
     return render(request, "post_form.html", context)
 
+def post_update(request, id=None):
+    if not request.user.is_authenticated() or User.objects.get(username=request.user).id != Post.objects.get(id=id).author_id:
+        raise Http404
+    instance = get_object_or_404(Post, id=id)
+    form = PostForm(request.POST or None, request.FILES or None, instance=instance)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.save()
+        messages.success(request, "<a href='#'>Item</a> Saved", extra_tags='html_safe')
+        return HttpResponseRedirect(instance.get_absolute_url())
+    context = {
+        "title": instance.title,
+        "instance": instance,
+        "form": form,
+    }
+    return render(request, "post_form.html", context)
+
 def comment_create(request, id):
     if not request.user.is_authenticated():
         raise Http404
@@ -82,8 +99,14 @@ def post_detail(request, id=None):
     video = ''
     if instance.video:
         video = "https://www.youtube.com/embed/" + instance.video.split('v=')[-1]
+    updated = False
+    if str(instance.created).split(".")[0] != str(instance.updated).split(".")[0]:
+        updated = True
+    may_updated = True
+    if User.objects.get(username=request.user).id != Post.objects.get(id=id).author_id:
+        may_updated = False
     context = {"title": instance.title, "post_detail": instance, "author_info": username, "comments": comments,
-               "video": video, "rating": rating, "liked": liked}
+               "video": video, "rating": rating, "liked": liked, "updated": updated, "may_updated": may_updated}
     return render(request, "post_detail.html", context)
 
 def user_detail(request, id=None):
