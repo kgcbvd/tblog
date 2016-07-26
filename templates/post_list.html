@@ -1,11 +1,13 @@
 {% extends "base.html" %}
+{% load get_item %}
 
 {% block content %}
     {% for post in post_list %}
         <!--<div class="row">
             <div class="col-md-8">-->
-        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <h3><a href="../post{{ post.id }}">{{ post.title }}</a></h3>
         <h5>{{ post.created }}</h5>
+        <h5>Рейтинг:{{ post.rating  }}</h5>
         <p>{{ post.content|truncatewords:20 }}</p>
         <hr>
         <!--</div>

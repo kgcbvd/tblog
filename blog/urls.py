@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from posts.views import post_list, post_detail, user_detail, post_create, comment_create, like, post_update, random_users
 from django.conf import settings
@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^post(?P<id>\d+)/like/$', like, name='like'),
     url(r'^post(?P<id>\d+)/edit/$', post_update, name='update'),
     url(r'^random_users/$', random_users),
+    url(r'', include('registration.backends.simple.urls')),
 ]
 
 

@@ -9,10 +9,11 @@ from django.contrib.auth.models import User
 from .forms import PostForm, CommentForm
 import random
 import json
+from datetime import datetime, timedelta
 
 def post_create(request):
     if not request.user.is_authenticated():
-        raise Http404
+        return redirect('/login')
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         instance = form.save(commit=False)
@@ -47,7 +48,7 @@ def post_update(request, id=None):
 
 def comment_create(request, id):
     if not request.user.is_authenticated():
-        raise Http404
+        return redirect('/login')
     post = Post.objects.get(id=id)
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -62,11 +63,22 @@ def comment_create(request, id):
     return render(request, 'comment_detail.html', {'form': form})
 
 def post_list(request):
-    queryset_list = []
-    if request.user.is_authenticated():
-        queryset_list = Post.objects.all()
-
-    paginator = Paginator(queryset_list, 5)
+    if not request.user.is_authenticated():
+        return redirect('/login')
+    queryset_list = Post.objects.all()
+    querysets = []
+    for post in queryset_list:
+        rating = 0
+        author = User.objects.get(id=post.author_id).username
+        try:
+            rating = Like.objects.get(post_id=post.id).total_likes
+        except:
+            pass
+        querysets.append({'id': post.id, 'rating': rating, 'title': post.title,
+                          'content': post.content, 'created': post.created})
+    #count_post_last_week = len(Post.objects.filter(created__gte=datetime.now() - timedelta(days=7)))
+    querysets = sorted(querysets, key=lambda k: (k['rating'], k['created']), reverse=True)
+    paginator = Paginator(querysets, 5)
     page = request.GET.get('page')
     try:
         queryset = paginator.page(page)
@@ -81,11 +93,16 @@ def post_list(request):
     return render(request, "post_list.html", context)
 
 def post_detail(request, id=None):
-    instance = get_object_or_404(Post, id=id)
     if not request.user.is_authenticated():
-        raise Http404
+        return redirect('/login')
+    instance = get_object_or_404(Post, id=id)
     username = User.objects.get(id=instance.author_id)
-    comments = Comment.objects.filter(post_id=id)
+    comments = []
+    comments_list = Comment.objects.filter(post_id=id)
+    for comment in comments_list:
+        user_comment = User.objects.get(id=comment.author_id).username
+        comments.append({"author": user_comment, "created": comment.created_on,
+                         "text": comment.text, "author_id": comment.author_id})
     try:
         rating = Like.objects.get(post_id=id).total_likes
     except:
@@ -111,6 +128,8 @@ def post_detail(request, id=None):
     return render(request, "post_detail.html", context)
 
 def user_detail(request, id=None):
+    if not request.user.is_authenticated():
+        return redirect('/login')
     user = get_object_or_404(User, id=id)
     posts = Post.objects.filter(author_id=id)
     context = {"user": user, "posts": posts}

@@ -34,6 +34,14 @@
                         <a href="../create">Новый пост</a>
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'auth_logout' %}">Выход</a></li>
+                    {% else %}
+                        <li><a href="{% url 'auth_login' %}">Войти</a></li>
+                        <li><a href="{% url 'registration_register' %}">Регистрация</a></li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
         <!-- /.container -->

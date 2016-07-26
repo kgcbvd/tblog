@@ -13,7 +13,6 @@
                 <th class="header"> Название поста</th>
                 <th class="header"> Дата публикации </th>
                 <th class="header"> Дата изменения </th>
-                <th class="header"> Рейтинг </th>
             </tr>
             </thead>
             <tbody>
@@ -22,7 +21,6 @@
                     <td><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></td>
                     <td>{{ post.created }}</td>
                     <td>{{ post.updated }}</td>
-                    <td>{{ post.rating }}</td>
                 </tr>
             {%  endfor %}
             </tbody>

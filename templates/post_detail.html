@@ -48,8 +48,8 @@
     <div class="media">
         <a class="pull-left" href="#"></a>
         <div class="media-body">
-            <h4 class="media-heading"> {{ comment.author_id }} &emsp;
-                <small>{{ comment.created_on }}</small>
+            <h4 class="media-heading"><a href="../user{{ comment.author_id }}">{{ comment.author }}</a> &emsp;
+                <small>{{ comment.created }}</small>
             </h4>
             {{ comment.text }}
         </div>
